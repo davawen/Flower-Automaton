@@ -45,6 +45,7 @@ impl Board {
         }
     }
 
+    #[allow(dead_code)]
     fn from_board(board: &Board) -> Self {
         Board {
             cells: board.cells.clone(),
@@ -145,26 +146,19 @@ fn main() {
         while let Some(ev) = window.poll_event() {
             match ev {
                 Event::Closed => return,
-                Event::MouseButtonPressed { button, x, y } => {
-                    match button {  
-                        mouse::Button::LEFT => {
-                            let col = ||{ thread_rng().gen_range(0..255) };
+                Event::MouseButtonPressed { button: mouse::Button::LEFT, x, y } => {  
+                    let col = ||{ thread_rng().gen_range(0..255) };
 
-                            board.set(x as usize, y as usize, Cell::Flower(Flower( col(), col(), col() )));
+                    board.set(x as usize, y as usize, Cell::Flower(Flower( col(), col(), col() )));
 
-                            board.render_at(&mut text, x as isize, y as isize);
-                        },
-                        _ => ()
-                    }
-                },
+                    board.render_at(&mut text, x as isize, y as isize);
+                }
                 _ => {}
             }
         }
 
         if mouse::Button::is_pressed(mouse::Button::RIGHT) {
-            let pos = window.mouse_position();
-            let x = pos.x;
-            let y = pos.y;
+            let Vector2i { x, y } = window.mouse_position();
 
             for ny in -20..=20 {
                 for nx in -20..=20 {
